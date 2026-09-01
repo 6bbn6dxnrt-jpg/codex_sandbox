@@ -1,0 +1,34 @@
+name: Poland Macro TimesFM3
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'timesfm[torch]' pandas requests huggingface_hub
+      - name: Prepare pipeline hotfix
+        run: |
+          sed 's/results\[k\]=annualize_level(dates,p,q,q)/results[k]=annualize_level(dates,p,q)/' timesfm_poland_forecast.py > run_timesfm_poland.py
+      - name: Run real Google TimesFM-3 macro inference
+        env:
+          HF_HUB_DISABLE_XET: '0'
+        run: python run_timesfm_poland.py
+      - name: Upload forecast outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: poland-macro-timesfm3
+          path: |
+            poland_macro_timesfm3.json
+            poland_macro_timesfm3.csv
