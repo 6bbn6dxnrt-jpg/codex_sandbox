@@ -28,8 +28,9 @@ def ets2(dt): return 1. if dt.year>=2028 else 0.
 def ea_future(dt): return {2026:.9,2027:1.2,2028:1.4,2029:1.5,2030:1.5}.get(dt.year,1.5)
 def ecb_future(dt): return 2.25 if dt.year==2026 else 2.0
 def brent_future(dt,s='base'):
-    x={2026:74.,2027:69.,2028:66.,2029:65.,2030:65.}[dt.year]
-    return x+({2026:35,2027:25,2028:10,2029:5,2030:3}[dt.year] if s=='energy_stress' else (-10 if s=='energy_relief' else 0))
+    y=min(max(dt.year,2026),2030)
+    x={2026:74.,2027:69.,2028:66.,2029:65.,2030:65.}[y]
+    return x+({2026:35,2027:25,2028:10,2029:5,2030:3}[y] if s=='energy_stress' else (-10 if s=='energy_relief' else 0))
 def gas_future(dt,s='base'):
     qq=(dt.month-1)//3+1
     x=({1:14,2:16,3:23,4:22}[qq] if dt.year==2026 else {1:20,2:17,3:15,4:14}[qq] if dt.year==2027 else 12 if dt.year==2028 else 10.5 if dt.year==2029 else 10)
@@ -43,8 +44,10 @@ def annual(hist,dates,point,quant=None):
         if len(v):
             r={'year':y,'point':float(v.mean())}
             if quant is not None:
+                qarr=np.asarray(quant)
+                if qarr.ndim==3:qarr=qarr[0]
                 for j,x in enumerate(QS):
-                    z=pd.concat([h,pd.DataFrame({'date':dates,'point':np.asarray(quant)[:,j]})]).drop_duplicates('date',keep='last').sort_values('date')
+                    z=pd.concat([h,pd.DataFrame({'date':dates,'point':qarr[:,j]})]).drop_duplicates('date',keep='last').sort_values('date')
                     w=z[z.date.dt.year==y].point
                     if len(w): r[f'p{int(x*100)}']=float(w.mean())
             out.append(r)
@@ -57,8 +60,10 @@ def inflation(hist,dates,point,quant=None):
         if len(a)==12 and len(b)==12:
             r={'year':y,'point':float((a.mean()/b.mean()-1)*100)}
             if quant is not None:
+                qarr=np.asarray(quant)
+                if qarr.ndim==3:qarr=qarr[0]
                 for j,x in enumerate(QS):
-                    z=pd.concat([h,pd.DataFrame({'date':dates,'point':np.asarray(quant)[:,j]})]).drop_duplicates('date',keep='last').sort_values('date'); aa=z[z.date.dt.year==y].point; bb=z[z.date.dt.year==y-1].point
+                    z=pd.concat([h,pd.DataFrame({'date':dates,'point':qarr[:,j]})]).drop_duplicates('date',keep='last').sort_values('date'); aa=z[z.date.dt.year==y].point; bb=z[z.date.dt.year==y-1].point
                     if len(aa)==12 and len(bb)==12:r[f'p{int(x*100)}']=float((aa.mean()/bb.mean()-1)*100)
             out.append(r)
     return out
@@ -100,7 +105,7 @@ def backtest(model,gdp,ea,br,gas,ecb):
         rec.append({'origin':str(origin.date()),'baseline_mae':float(np.mean(abs(b-act))),'conditional_oracle_mae':float(np.mean(abs(c-act)))})
     return {'note':'conditional uses realized future exogenous variables; diagnostic, not a real-time backtest','origins':rec,'mean_baseline_mae':float(np.mean([x['baseline_mae'] for x in rec])),'mean_conditional_oracle_mae':float(np.mean([x['conditional_oracle_mae'] for x in rec]))}
 def raw_balance(model):
-    d=append_or_replace(fred('GGNLBAPLA188N'),'2025-01-01',-7.3); h=END-2025; o=list(model.predict_batch(contexts=[d.value.to_numpy(np.float32)],horizon=h,return_quantiles=True,use_symmetric_averaging=False))[0]; fd=pd.date_range('2026-01-01',periods=h,freq='YS'); return annual(None,fd,np.asarray(o.forecast).reshape(-1),np.asarray(o.quantiles))
+    d=append_or_replace(fred('GGNLBAPLA188N'),'2025-01-01',-7.3); h=END-2025; o=list(model.predict_batch(contexts=[d.value.to_numpy(np.float32)],horizon=h,return_quantiles=True,use_symmetric_averaging=False))[0]; fd=pd.date_range('2026-01-01',periods=h,freq='YS'); qarr=np.asarray(o.quantiles); qarr=qarr[0] if qarr.ndim==3 else qarr; return annual(None,fd,np.asarray(o.forecast).reshape(-1),qarr)
 def fiscal(balance,gdp,inf):
     bm={x['year']:x['point'] for x in balance}; gm={x['year']:x['point'] for x in gdp}; im={x['year']:x['point'] for x in inf}; sfa={2026:1.,2027:.8,2028:.5,2029:.3,2030:.2}; d=59.7; out=[]
     for y in range(2026,2031):
