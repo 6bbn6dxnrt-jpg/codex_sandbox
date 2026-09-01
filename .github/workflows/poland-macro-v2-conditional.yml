@@ -1,0 +1,30 @@
+name: Poland Macro v2 conditional
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install TimesFM 3
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'timesfm[torch]==3.0.0' pandas numpy requests safetensors
+      - name: Run Poland Macro v2
+        run: python timesfm_poland_macro_v2_conditional.py
+      - name: Upload v2 outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: poland-macro-v2-conditional
+          path: |
+            poland_macro_v2.json
+            poland_macro_v2.csv
+            poland_macro_v2_fiscal.csv
