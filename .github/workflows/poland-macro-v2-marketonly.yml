@@ -1,0 +1,29 @@
+name: Poland Macro v2 market-only GDP
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install TimesFM 3
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'timesfm[torch]==3.0.0' pandas numpy requests safetensors
+      - name: Run market-only GDP forecast
+        run: python timesfm_poland_macro_v2_marketonly_forecast.py
+      - name: Upload market-only GDP
+        uses: actions/upload-artifact@v4
+        with:
+          name: poland-macro-v2-gdp-marketonly
+          path: |
+            poland_macro_v2_gdp_marketonly.json
+            poland_macro_v2_gdp_marketonly.csv
