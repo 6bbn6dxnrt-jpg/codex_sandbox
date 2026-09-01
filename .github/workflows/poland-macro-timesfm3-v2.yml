@@ -1,0 +1,30 @@
+name: Poland Macro TimesFM3 v2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'timesfm_poland_forecast_v2.py'
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: python -m pip install 'timesfm[torch]' pandas requests huggingface_hub
+      - name: Forecast
+        env:
+          HF_HUB_DISABLE_XET: '0'
+        run: python timesfm_poland_forecast_v2.py
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: poland-macro-timesfm3-v2
+          path: |
+            poland_macro_timesfm3.json
+            poland_macro_timesfm3.csv
