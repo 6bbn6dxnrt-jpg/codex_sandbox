@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# Corrected runner: combines 2026 actual observations with TimesFM-3 forecasts.
 src = Path('timesfm_poland_forecast.py').read_text()
 
 old = '''def annualize_rate(actual_df, dates, point, quant=None, start_year=2026):
