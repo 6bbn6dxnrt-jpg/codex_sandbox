@@ -19,7 +19,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install 'timesfm[torch]==3.0.0' pandas numpy requests safetensors
       - name: Run Poland Macro v2
-        run: python timesfm_poland_macro_v2_conditional.py
+        run: python timesfm_poland_macro_v2_runner.py
       - name: Upload v2 outputs
         uses: actions/upload-artifact@v4
         with:
