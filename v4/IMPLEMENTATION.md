@@ -1,0 +1,11 @@
+# v4 implementation note, before first model scores
+
+National CPI components are now available from GUS for 2010-2025 (COICOP 1999) and 2026 (COICOP 2018). We retain eight coarse matched categories as predictors: food/non-alcoholic beverages, alcohol/tobacco, clothing, household energy, motor fuel, health, education, restaurants. Category mapping is approximate across the classification change and must be disclosed. No claim that they are an exhaustive disjoint CPI basket.
+
+The national CPI challenger forecasts each predictor using the predeclared seasonal and damped methods and maps these forecasts to headline CPI via ridge regression (penalty 10 after scaling, 120-month window), with headline lags 1/2/12. The two paths have fixed equal weights. Regression coefficients are NOT official expenditure weights. A full exact national CPI bottom-up model is not claimed: historical national basket weights have not been assembled. Separately, the four-component HICP model uses official annual weights and correct December linking.
+
+Google TimesFM-3 is an additional native multivariate nine-series challenger (headline plus eight national predictors), not a surrogate labelled as Google. Current execution and checkpoint revision are to be recorded. Its results remain separately identifiable. Bank forecasts never enter these models.
+
+GDP uses Polish industrial, construction, real retail and German industrial indicators. Missing future predictor months are forecast by a ridge autoregression; realized future observations are forbidden. AR(1,2,4) quarterly GDP is combined 50:50 with the ridge indicator bridge. The frozen v3 GUS/Eurostat target history is reused for same-target comparison, with its documented revision-splice limitation retained; this is not a newly recovered historical-vintage dataset. Annual GDP is a companion estimate using last available seasonal quarter weights, with that approximation explicitly marked. Quarterly GDP is the primary scored target.
+
+All retrospective tests remain latest-vintage pseudo-real-time audits. No result is an untouched holdout; genuine prospective evaluation begins with the dated forecast registry. All algorithmic departures or failures must remain visible, and v3 is never overwritten.
