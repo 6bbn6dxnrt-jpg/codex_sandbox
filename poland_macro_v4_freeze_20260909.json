@@ -1,0 +1,29 @@
+{
+  "release_id": "Poland Macro v4 challenger / 2026-09-09",
+  "origin": "2026-09-09",
+  "status": "frozen experimental challengers; v3 not replaced",
+  "created_at_utc": "2026-09-09T13:55:20.802112+00:00",
+  "new_records": 48,
+  "extended_records": 661,
+  "active_contest_records": 660,
+  "v3_registry_sha256": "ec5314b41d638625fa39da91e2a98c8e7966994ca0aa1b954c2993fe41352a24",
+  "protocol_commit": "2d73bb04253cb756326fd383de17576e95061eaa",
+  "implementation_note_commit": "620c702e7bd292c1e2e2009dca1053c310f9b8e0",
+  "google_execution_commit": "4ec2b4ab2c3d3d657bec3f4d424d84c252abf6d7",
+  "google_workflow_run": 34357679766,
+  "google_revision": "43046b85ec22d584a13f8098c2ed39c889e129c2",
+  "files": {
+    "outputs/v4_registry.csv": "0db68ecd78e43843f44ae766ad32f1422485692bc6997e58e3302fa0e9357b7d",
+    "outputs/forecast_registry_v4_extended.csv": "749c3c144ad4af224910c7d66845439818aba848d68bfe8a610658203f82ba65",
+    "outputs/contest_registry_v4_extended.csv": "4c3153c8e0a1dfce273deb704fbb15b2ca3b291ae2d12a45851cfea5299308f9",
+    "outputs/cpi_matched_metrics.csv": "dcb1954f60f6166ec9dd01a6ea729a5b400c4c1b4305e7cec4ab49b034c210dc",
+    "outputs/paired_audit.csv": "60931d15f662e54a8f0f186695a26648f6e28b3fb0913f431d47110ff7a9595b",
+    "src/challenger.py": "ec9caf4f612a6ca7ab9abb59c106cedb9ce35896a80202b1df1a4b998c4a79d0",
+    "src/finalize.py": "0b9a798279b5b43adb35cd2a007485ab7aca923b57d35725e2225c79a46b7596",
+    "src/score.py": "fc88dd0b562cf04d58395fce4826addfa9c29675f89c79378a052c16192b2797",
+    "Poland_Macro_v4_konkurencyjne_modele.xlsx": "6412f94bb20b983e39c61820aeae64f167c055e8e29a3a52ad7ab6000d511ecc",
+    "Raport_v4_2026-09-09.html": "6ead6f25e960864b99e8a26d21c139083464cb1959fe3b179be16243a1e5fca8",
+    "README_PL.md": "d6e662b36a43a9b96855f0bc59407592f8a34cbd7ef2bdc3ff013d27fa51b1c2"
+  },
+  "note": "Hashes commit to the delivered files, not to forecasting skill. Historical audit uses latest-vintage data and overlapping samples. The native Google path is July-conditioned, while the classical CPI bridge also uses the observed August flash. No forecast is manually moved to the bank consensus. All 613 previous records are preserved. Future updates must use a new release ID and origin."
+}
