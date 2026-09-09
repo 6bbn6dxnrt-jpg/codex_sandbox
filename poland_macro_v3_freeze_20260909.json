@@ -1,0 +1,17 @@
+{
+  "release_id": "Poland Macro v3 / 2026-09-09",
+  "forecast_origin": "2026-09-09",
+  "status": "frozen experimental forecast; prospective accuracy unknown",
+  "forecast_registry": {
+    "records": 384,
+    "sha256": "ec5314b41d638625fa39da91e2a98c8e7966994ca0aa1b954c2993fe41352a24"
+  },
+  "publication_annual_sha256": "7420b14456b292626bd77f4fcef6af886212f8319e70fcb38d19f162f248820f",
+  "release_json_sha256": "e1e95e7d86eeeb60d94ef29a70f5e1876411b277ee4316b9a79687fb0205158d",
+  "source_commit": "01a4280450a1ec37558cb1cac7553c9909849b2c",
+  "source_workflow_run": 34338106055,
+  "source_artifact_sha256": "a87b52116a471d3571646743875ab194b801d4240820988abc6a03ea0f774b6f",
+  "source_retrieval_date": "2026-09-09",
+  "daily_fx_observation_cutoff": "2026-09-08",
+  "note": "This is a timestamped commitment to the delivered files, not proof of forecasting skill. The report, frozen inputs, model outputs and scoring code are delivered as a separate archive. Later updates must use a new forecast origin and must not overwrite these records."
+}
