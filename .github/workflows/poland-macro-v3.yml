@@ -4,6 +4,7 @@ on:
     branches: [poland-macro-v3-20260909]
     paths:
       - 'poland_macro_v3*.py'
+      - 'macro_v3_inference.py'
       - '.github/workflows/poland-macro-v3.yml'
   workflow_dispatch:
 permissions:
@@ -15,15 +16,23 @@ jobs:
   research:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      HF_HUB_DISABLE_PROGRESS_BARS: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install research dependencies
-        run: python -m pip install numpy pandas requests scipy statsmodels scikit-learn lxml
+      - name: Install CPU research dependencies
+        run: |
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install 'timesfm[torch]==3.0.0' numpy pandas requests scipy statsmodels scikit-learn lxml safetensors
       - name: Acquire dated source snapshots
         run: python -u poland_macro_v3_acquire.py
+      - name: Run audited inference and ex-ante challenge
+        run: python -u macro_v3_inference.py
       - name: Upload audit package
         if: always()
         uses: actions/upload-artifact@v4
