@@ -1,0 +1,34 @@
+name: Poland Macro v3 research
+on:
+  push:
+    branches: [poland-macro-v3-20260909]
+    paths:
+      - 'poland_macro_v3*.py'
+      - '.github/workflows/poland-macro-v3.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: poland-macro-v3-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install research dependencies
+        run: python -m pip install numpy pandas requests scipy statsmodels scikit-learn lxml
+      - name: Acquire dated source snapshots
+        run: python -u poland_macro_v3_acquire.py
+      - name: Upload audit package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poland-macro-v3-research
+          path: poland_macro_v3_run/
+          retention-days: 90
+          if-no-files-found: error
