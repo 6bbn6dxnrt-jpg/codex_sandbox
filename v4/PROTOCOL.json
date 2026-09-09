@@ -1,0 +1,14 @@
+{
+  "release": "Poland Macro v4 challenger / 2026-09-09",
+  "status": "pre-analysis protocol; exploratory retrospective audit, prospective competition starts on publication",
+  "v3_frozen_registry_sha256": "ec5314b41d638625fa39da91e2a98c8e7966994ca0aa1b954c2993fe41352a24",
+  "scope": ["component inflation and explicit national CPI bridge if national components unavailable", "monthly-indicator GDP bridge"],
+  "horizon": "monthly CPI through December 2027 and quarterly GDP through December 2027; no replacement of distant v3 forecasts",
+  "data_rules": ["archive downloaded bytes, URLs, timestamps and SHA256", "latest vintage must never be labelled real-time vintage", "use conservative publication lags for retrospective origins", "no backward filling", "no realized future exogenous inputs", "no bank forecasts or economic overrides as model inputs", "do not splice old/new ECOICOP without documented compatible series"],
+  "inflation_candidates": ["headline random walk in year-on-year rates", "headline seasonal monthly-price-change mean over last five available years", "component seasonal and damped persistence forecasts, fixed equal weights", "optional genuine TimesFM component forecast shown separately"],
+  "gdp_candidates": ["last observed year-on-year growth", "ridge autoregression", "ridge bridge using Polish industrial production, construction and real retail plus German production where available", "fixed 50:50 autoregression/bridge combination"],
+  "hyperparameters": {"ridge_penalty_after_standardization": 10.0, "estimation_window_months":120, "estimation_window_quarters":60, "inflation_seasonal_window_years":5, "damping_monthly":0.8},
+  "audit": {"origins":"monthly ninth-day origins 2015-2025 where data allow", "primary_loss":"MAE of comparable CPI y/y monthly and GDP y/y quarterly targets", "secondary_loss":["RMSE", "empirical interval coverage", "annual target MAE where complete"], "subperiods":["2015-2019","2020-2022","2023-2025"], "selection_rule":"publish fixed predeclared challenger; do not retrospectively claim it is a validated winner; negative results retained", "minimum_evidence_for_promotion":"at least 5 percent MAE improvement overall and no >10 percent degradation in 2023-2025, plus no data-quality failures; promotion still provisional"},
+  "uncertainty":"empirical residual paths from mature historical origins, not arithmetic averages of marginal quantiles; no guarantee of nominal coverage",
+  "known_limitations":["historical vintages may be unavailable", "any TimesFM historical comparison can overlap model pretraining data", "small and overlapping macro samples", "same-day retrospective protocol is not an untouched holdout", "future basket weights unknown: last published weights held fixed and disclosed"]
+}
