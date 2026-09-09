@@ -1,0 +1,23 @@
+name: Bank benchmark source snapshot
+on:
+  push:
+    branches: [poland-macro-v3-20260909]
+    paths: ['bank_benchmark_snapshot.py', '.github/workflows/bank-benchmark-snapshot.yml']
+permissions:
+  contents: read
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests lxml
+      - run: python bank_benchmark_snapshot.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bank-benchmark-sources
+          path: bank_benchmark_sources/
+          retention-days: 90
