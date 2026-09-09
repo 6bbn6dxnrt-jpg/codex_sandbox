@@ -5,6 +5,7 @@ on:
     paths:
       - 'poland_macro_v3*.py'
       - 'macro_v3_inference.py'
+      - 'macro_v3_official_run.py'
       - '.github/workflows/poland-macro-v3.yml'
   workflow_dispatch:
 permissions:
@@ -31,8 +32,8 @@ jobs:
           python -m pip install 'timesfm[torch]==3.0.0' numpy pandas requests scipy statsmodels scikit-learn lxml safetensors
       - name: Acquire dated source snapshots
         run: python -u poland_macro_v3_acquire.py
-      - name: Run audited inference and ex-ante challenge
-        run: python -u macro_v3_inference.py
+      - name: Run final GUS-reconciled inference and ex-ante challenge
+        run: python -u macro_v3_official_run.py
       - name: Upload audit package
         if: always()
         uses: actions/upload-artifact@v4
