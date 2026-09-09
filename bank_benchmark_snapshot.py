@@ -1,5 +1,5 @@
-"""Public-source audit only. No inference, account data, or forecast modifications."""
-import json,hashlib,re
+"""Public-source evidence acquisition only; no model or forecast modifications."""
+import json,hashlib
 from pathlib import Path
 from datetime import datetime,timezone
 from urllib.parse import urljoin
@@ -8,31 +8,31 @@ import requests
 from lxml import html
 OUT=Path('bank_benchmark_sources');OUT.mkdir(exist_ok=True)
 URLS={
-'mbank_aug11':'https://makroekonomia.mbank.pl/467714-prognozy-dla-stop-procentowych-i-walut-z-komentarzem',
-'mbank_home':'https://makroekonomia.mbank.pl/',
-'pko_aug13':'https://www.pkobp.pl/relacje-inwestorskie/akcjonariusze/konsensus-i-prognozy',
-'pekao_jul23':'https://www.pekao.com.pl/relacje-inwestorskie/akcje/konsensus.html',
-'pekao_home':'https://www.pekao.com.pl/analizy-makroekonomiczne',
-'ing_sep04':'https://ekonomiczny.ing.pl/publikacja/876305',
-'ca_aug31':'https://www.credit-agricole.pl/amp/przedsiebiorstwa/serwis-ekonomiczny/makromapa/2026/niekorzystne-tendencje-demograficzne-spowolnia-wzrost-gospodarczy-w-polsce',
-'ca_home':'https://www.credit-agricole.pl/przedsiebiorstwa/serwis-ekonomiczny/makromapa',
-'erste_home':'https://www.erste.pl/serwis-ekonomiczny',
-'erste_macro':'https://www.erste.pl/serwis-ekonomiczny/makroskop',
-'millennium_home':'https://www.bankmillennium.pl/o-banku/analizy-makroekonomiczne',
-'millennium_alt':'https://www.bankmillennium.pl/analizy-makroekonomiczne',
-'bos_home':'https://www.bosbank.pl/korporacje-i-JST/serwis-ekonomiczny/analizy-makroekonomiczne',
-'citi_home':'https://www.citihandlowy.pl/poland/homepage/polish/komentarze.htm',
-'bgk_home':'https://www.bgk.pl/analizy-i-badania/',
-'ali_home':'https://www.aliorbank.pl/dodatkowe-informacje/analizy-makroekonomiczne.html',
-'bnp_home':'https://www.bnpparibas.pl/badania-ekonomiczne',
-'analizy_aug31':'https://www.analizy.pl/tylko-u-nas/40533/prognozy-pkb-i-inflacji-sierpien-2026'}
+'ing_sep04_pdf':'https://cdn-netpr.pl/file/attachment/3065713/84/dane_i_prognozy.pdf?download=false',
+'mbank_t1':'https://prowly-prod.s3.eu-west-1.amazonaws.com/uploads/11961/assets/846128/-7ba01053b0c38bfc455c71b78eaa37e3.png',
+'mbank_t2':'https://prowly-prod.s3.eu-west-1.amazonaws.com/uploads/11961/assets/846129/-110510ef62425556fadb02c0b743be07.jpg',
+'mbank_t3':'https://prowly-prod.s3.eu-west-1.amazonaws.com/uploads/11961/assets/846130/-dde9fc7de60f01da70def7c0eff61315.jpg',
+'mbank_t4':'https://prowly-prod.s3.eu-west-1.amazonaws.com/uploads/11961/assets/846131/-6b39e2b07705cff61c00bab944127e6a.jpg',
+'ca_sep07':'https://static.credit-agricole.pl/asset/m/a/k/makromapa-07092026_36674.pdf',
+'ca_aug31':'https://static.credit-agricole.pl/asset/m/a/k/makromapa-310862026_36577.pdf',
+'erste_jun24':'https://www.erste.pl/regulation_file_server/time20260624153549/download?id=169535&lang=pl_PL',
+'bgk_quarterly':'https://www.bgk.pl/przydatne-informacje/sprawozdania-i-raporty/kwartalny-raport-makroekonomiczny/',
+'ali_economics':'https://www.aliorbank.pl/dodatkowe-informacje/informacje/serwis-ekonomiczny.html',
+'bnp_may26':'https://media.bnpparibas.pl/pr/870567/polska-gospodarka-solidny-wzrost-mimo-geopolitycznego-chaosu',
+'bos_overview':'https://www.bosbank.pl/korporacje-i-JST/serwis-ekonomiczny',
+'bos_monthly':'https://www.bosbank.pl/korporacje-i-JST/serwis-ekonomiczny/przeglad-miesieczny',
+'citi_economics':'https://www.citibank.pl/poland/homepage/polish/komentarze.htm',
+'millennium_economics':'https://www.bankmillennium.pl/o-banku/analizy-i-raporty/analizy-makroekonomiczne',
+'millennium_home':'https://www.bankmillennium.pl/o-banku',
+'bos_aug25_pap':'https://strefainwestorow.pl/wiadomosci/20260825/w-26-wzrost-pkb-polski-38-proc-cpi-nie-przekroczy-trwale-35-proc-rpp-nie-zmieni',
+'analizy_jun30':'https://www.analizy.pl/tylko-u-nas/40029/prognozy-pkb-i-inflacji-czerwiec-2026'}
 def one(item):
  name,url=item
  try:
-  r=requests.get(url,timeout=30);r.raise_for_status();data=r.content
-  ext='.pdf' if data.startswith(b'%PDF') else '.html'
+  r=requests.get(url,timeout=35);r.raise_for_status();data=r.content;ct=r.headers.get('content-type','')
+  ext='.pdf' if data.startswith(b'%PDF') else '.png' if data.startswith(b'\x89PNG') else '.jpg' if 'image/' in ct else '.html'
   (OUT/(name+ext)).write_bytes(data)
-  out={'name':name,'url':r.url,'retrieved_at':datetime.now(timezone.utc).isoformat(),'sha256':hashlib.sha256(data).hexdigest(),'bytes':len(data),'status':'ok'}
+  out={'name':name,'url':r.url,'retrieved_at':datetime.now(timezone.utc).isoformat(),'sha256':hashlib.sha256(data).hexdigest(),'bytes':len(data),'status':'ok','content_type':ct}
   if ext=='.html':
    doc=html.fromstring(data)
    links=[{'text':' '.join(e.text_content().split()),'url':urljoin(r.url,e.get('href'))} for e in doc.xpath('//a[@href]')]
