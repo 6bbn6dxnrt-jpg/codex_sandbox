@@ -1,8 +1,5 @@
 name: Poland Macro publication audit
 on:
-  push:
-    branches: [poland-macro-publication-audit-20260912]
-    paths: ['publication_audit/**', '.github/workflows/poland-macro-publication-audit.yml']
   workflow_dispatch:
 permissions:
   contents: read
