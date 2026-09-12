@@ -1,0 +1,45 @@
+name: Poland Macro publication audit
+on:
+  push:
+    branches: [poland-macro-publication-audit-20260912]
+    paths: ['publication_audit/**', '.github/workflows/poland-macro-publication-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: poland-macro-publication-audit
+  cancel-in-progress: false
+jobs:
+  matched-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      HF_HUB_DISABLE_PROGRESS_BARS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Retrieve original frozen input artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: poland-macro-v4-google
+          run-id: 34357679766
+          github-token: ${{ github.token }}
+          path: frozen_google
+      - name: Install original CPU numerical versions
+        run: |
+          python -m pip install 'torch==2.14.0+cpu' --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install 'timesfm[torch]==3.0.0' 'numpy==2.4.6' 'pandas==3.0.5' safetensors
+      - name: Audit 1 vs 9 series and native intervals
+        run: python -u publication_audit/matched_test.py
+      - name: Archive audit outputs even on failed gate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poland-macro-publication-audit
+          path: publication_audit_run/
+          if-no-files-found: warn
