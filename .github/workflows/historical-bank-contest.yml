@@ -2,7 +2,7 @@ name: Historical bank forecast sources
 on:
   push:
     branches: [poland-macro-bank-backtest-20260917]
-    paths: ['history_contest/acquire.py', '.github/workflows/historical-bank-contest.yml']
+    paths: ['history_contest/acquire_mbank.py', '.github/workflows/historical-bank-contest.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,11 +16,11 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install requests lxml pymupdf
-      - run: python -u history_contest/acquire.py
+      - run: python -u history_contest/acquire_mbank.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: historical-bank-sources-20260917
-          path: history_sources/
+          name: historical-mbank-sources-20260917
+          path: mbank_history_sources/
           retention-days: 90
           if-no-files-found: error
