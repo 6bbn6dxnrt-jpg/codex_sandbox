@@ -1,0 +1,17 @@
+# Historical bank contest — 17 September 2026
+
+Goal: compare previously frozen retrospective model paths with actually published historical bank forecasts. Do not modify or retune models. Do not overwrite the 661 issued forecast records. This is a new evaluation, not a backdated forecast.
+
+Primary targets: Polish national CPI year-on-year for a specified month (including quarter-end/December) and quarterly real GDP year-on-year NSA. Do not equate CPI with HICP, quarter-end with quarterly average, or annual average growth with mean y/y. Annual targets only if exact/explicit compatible aggregation is available, otherwise exclude.
+
+Historical source window for first completed contest: publication years 2019–2024, realized targets no later than December 2024. Primary comparison grid: original quarterly-spaced model issue dates (9 March/June/September/December); bank report must be dated no later than issue date and no more than 31 days earlier. One latest admissible report per bank/model issue date; no duplicated older forecasts. If archive access prevents complete coverage, list every attempted source and report actual coverage without claiming all banks. Supplementary samples may use monthly original classical model origins, but must not be pooled with the Google comparison.
+
+Take every eligible future target in an included report that fits the pre-existing model forecast horizon and has an explicit definition. Do not cherry-pick target points according to accuracy. Exclude dates/definitions or internally conflicting values that cannot be resolved from the primary source. Past/current preliminary observations already released are not forecasts; primary table targets the current or a later calendar month/quarter whose outcome was not yet published.
+
+Use archived official target series already held with the frozen model data for consistent scoring; cross-check against official public GUS tables. Explicitly label realization vintage, especially GDP; do not claim first release without a dated first-release source. Models were computed retrospectively with revised histories and unknown Google pretraining overlap. Banks may have newer flash/current indicators than the model's conservative lag. Report this two-sided information mismatch; the result is not a clean real-time causal technology experiment.
+
+Models: Google TimesFM one-series and nine-series from pinned existing native paths, original classical v4 (with known erratum), and R1 fixed-coordinate variant where archived paths/replay allow. No bank data enter model fitting. Classical GDP remains fixed AR/bridge 50-50. Include naive controls but do not confuse them with banks.
+
+Metrics: paired MAE, RMSE, bias, wins/ties/losses; separate CPI/GDP and relevant horizons. Per-bank and pooled bank-target pairs; show unique targets and origins, avoid implying dependent rows are independent. Bank median only on aligned same-origin/target observations, with component count disclosed. Bootstrap by issue year, exploratory only; sensitivity to publication age <=7 days, shock cohort, excluding internally ambiguous targets. No native interval comparisons against banks without bank probabilities.
+
+Required deliverable: actual numeric paired results, row-level sources/dates/predictions/realizations, exclusion log, replay scoring script, workbook and concise report. Negative results are equally valid. An incomplete historical census does not justify postponing all scoring.
