@@ -13,4 +13,4 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install pytest
-      - run: pytest -q local_wealth/tests
+      - run: PYTHONPATH=. pytest -q local_wealth/tests

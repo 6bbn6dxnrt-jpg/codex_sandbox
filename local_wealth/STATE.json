@@ -1,5 +1,5 @@
 {
-  "project_version": "0.1.0",
+  "project_version": "0.1.1",
   "primary_window": [
     2020,
     2025
@@ -14,9 +14,9 @@
     "analytic"
   ],
   "kpi": {
-    "jst_in_frame": 0,
-    "jst_source_found": 0,
-    "documents_discovered": 0,
+    "jst_in_frame": 3,
+    "jst_source_found": 3,
+    "documents_discovered": 24,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 0,
@@ -31,6 +31,19 @@
     "gold_monetary_accuracy": null
   },
   "current_extractor": "v0",
-  "blockers": [],
-  "next_gate": "48h heterogeneous end-to-end benchmark"
+  "benchmark": {
+    "verified_on": "2026-10-06",
+    "source_patterns": [
+      "direct_attachments",
+      "year_index_nested",
+      "person_pages"
+    ],
+    "exact_document_count_scope": "Działdowo councillor declarations filed in 2024",
+    "exact_document_count": 24,
+    "ci_status": "retry_after_import_path_fix"
+  },
+  "blockers": [
+    "durable private raw-document storage is not yet wired to the GitHub runner; public repo must not receive declaration PDFs or row-level personal data"
+  ],
+  "next_gate": "persist a bounded private RAW batch, hash/deduplicate it, then measure download and triage throughput"
 }
