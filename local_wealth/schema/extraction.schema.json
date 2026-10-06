@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Local Wealth field occurrence",
+  "type": "object",
+  "required": [
+    "document_id",
+    "field",
+    "status",
+    "source_page",
+    "extractor_version"
+  ],
+  "properties": {
+    "document_id": {
+      "type": "string"
+    },
+    "person_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "filing_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "field": {
+      "type": "string"
+    },
+    "raw_literal": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "normalized_value": {},
+    "status": {
+      "enum": [
+        "read",
+        "not_applicable",
+        "blank",
+        "illegible",
+        "missing",
+        "unresolved"
+      ]
+    },
+    "semantic_role": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "currency": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "unit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_page": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source_bbox": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "number"
+      }
+    },
+    "extractor_version": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "review_status": {
+      "enum": [
+        "unreviewed",
+        "auto_qa_pass",
+        "review_required",
+        "gold_verified"
+      ]
+    }
+  }
+}
