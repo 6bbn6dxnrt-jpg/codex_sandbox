@@ -1,0 +1,11 @@
+primary_years: [2020, 2021, 2022, 2023, 2024, 2025]
+stage_1:
+  unit: JST
+  strata: [voivodeship, jst_level, commune_type, population_band]
+stage_2:
+  unit: eligible_person
+  policy: census_within_sampled_JST
+pilot:
+  purpose: throughput_and_error_estimation
+  require_heterogeneous_sources: true
+  freeze_final_n_after_pilot: true
