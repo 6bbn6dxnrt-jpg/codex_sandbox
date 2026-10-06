@@ -1,0 +1,12 @@
+data/
+raw/
+bronze/
+silver/
+gold/
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.parquet
+*.sqlite
+.env
