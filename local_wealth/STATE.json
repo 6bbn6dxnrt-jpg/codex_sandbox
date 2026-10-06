@@ -1,0 +1,36 @@
+{
+  "project_version": "0.1.0",
+  "primary_window": [
+    2020,
+    2025
+  ],
+  "phase": "foundation_benchmark",
+  "layers": [
+    "raw",
+    "bronze",
+    "silver",
+    "gold",
+    "panel",
+    "analytic"
+  ],
+  "kpi": {
+    "jst_in_frame": 0,
+    "jst_source_found": 0,
+    "documents_discovered": 0,
+    "documents_downloaded": 0,
+    "unique_hashes": 0,
+    "bronze_filings": 0,
+    "silver_filings": 0,
+    "gold_audited": 0,
+    "person_panels_2y": 0,
+    "person_panels_4y": 0
+  },
+  "quality": {
+    "unresolved_monetary_fields_pct": null,
+    "gold_field_accuracy": null,
+    "gold_monetary_accuracy": null
+  },
+  "current_extractor": "v0",
+  "blockers": [],
+  "next_gate": "48h heterogeneous end-to-end benchmark"
+}
