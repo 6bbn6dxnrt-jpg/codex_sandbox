@@ -1,0 +1,11 @@
+silver:
+  require_source_document: true
+  require_provenance: true
+  max_unresolved_monetary_fields_pct: 10
+gold:
+  target_field_accuracy: 0.97
+  target_monetary_occurrence_accuracy: 0.99
+  stratify_by: [document_class, handwriting, role_family, jst_type, year]
+promotion:
+  frozen_gold_required: true
+  no_material_regression_by_document_class: true
