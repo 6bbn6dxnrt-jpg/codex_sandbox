@@ -1,12 +1,22 @@
 {
-  "project_version": "0.1.2",
-  "primary_window": [2020, 2025],
+  "project_version": "0.1.3",
+  "primary_window": [
+    2020,
+    2025
+  ],
   "phase": "foundation_benchmark",
-  "layers": ["raw", "bronze", "silver", "gold", "panel", "analytic"],
+  "layers": [
+    "raw",
+    "bronze",
+    "silver",
+    "gold",
+    "panel",
+    "analytic"
+  ],
   "kpi": {
     "jst_in_frame": 3,
     "jst_source_found": 3,
-    "documents_discovered": 57,
+    "documents_discovered": 220,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 0,
@@ -22,18 +32,23 @@
   },
   "current_extractor": "v0",
   "benchmark": {
-    "verified_on": "2026-10-06",
-    "source_patterns": ["direct_attachments", "year_index_nested", "person_pages"],
-    "verified_discovery_count": 57,
-    "verified_discovery_basis": "private Source Registry Run Ledger",
+    "verified_on": "2026-10-07",
+    "source_patterns": [
+      "direct_attachments",
+      "year_index_nested",
+      "person_pages"
+    ],
+    "verified_discovery_count": 220,
+    "verified_discovery_basis": "private Source Registry Run Ledger; Działdowo 182 + Cewice 38",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
     "ci_status": "success",
     "ci_run_id": 37524703443,
-    "ci_commit": "3c6ab9c0f80a06f58bff50ffd8bc731a712a946b"
+    "ci_commit": "3c6ab9c0f80a06f58bff50ffd8bc731a712a946b",
+    "bialystok_person_pages_reported": 611
   },
   "blockers": [
     "durable private raw-document byte ingress is not yet wired; public repository must not receive declaration PDFs or row-level personal data",
-    "ephemeral live-network benchmark workflow creation was blocked by connector safety checks"
+    "GitHub connector safety checks currently block the discovery normalizer code change needed for underscore/hyphen person-page URLs"
   ],
-  "next_gate": "persist a bounded private RAW batch, hash/deduplicate it, then measure real download and PDF triage throughput"
+  "next_gate": "expand Białystok person pages to document URLs; persist a bounded private RAW batch as soon as byte ingress is available"
 }
