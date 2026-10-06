@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "purpose": "heterogeneous discovery benchmark; source URLs only",
+  "sources": [
+    {
+      "jst": "Działdowo",
+      "teryt": "2803011",
+      "jst_type": "urban_commune",
+      "pattern": "direct_attachments",
+      "url": "https://bip.dzialdowo.eu/artykul/962/5262/oswiadczenia-radnych-zlozone-w-2024-r",
+      "verified_on": "2026-10-06"
+    },
+    {
+      "jst": "Cewice",
+      "jst_type": "rural_commune",
+      "pattern": "year_index_nested",
+      "url": "https://bip.cewice.pl/artykul/oswiadczenia-majatkowe",
+      "verified_on": "2026-10-06"
+    },
+    {
+      "jst": "Białystok",
+      "jst_type": "city_county",
+      "pattern": "person_pages",
+      "url": "https://www.bip.bialystok.pl/urzad_miejski/oswiadczenia_majatkowe/",
+      "verified_on": "2026-10-06"
+    }
+  ]
+}
