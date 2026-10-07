@@ -1,5 +1,5 @@
 {
-  "project_version": "0.1.10",
+  "project_version": "0.1.11",
   "primary_window": [
     2020,
     2025
@@ -16,7 +16,7 @@
   "kpi": {
     "jst_in_frame": 6,
     "jst_source_found": 6,
-    "documents_discovered": 1647,
+    "documents_discovered": 1749,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 83,
@@ -38,8 +38,8 @@
       "year_index_nested",
       "person_pages"
     ],
-    "verified_discovery_count": 1647,
-    "verified_discovery_basis": "BIP verification; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 475 + Powiat Wrzesinski 397 + Wojewodztwo Warminsko-Mazurskie 133",
+    "verified_discovery_count": 1749,
+    "verified_discovery_basis": "BIP verification; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 475 + Powiat Wrzesinski 397 + Wojewodztwo Warminsko-Mazurskie 235",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
     "ci_status": "success",
     "ci_run_id": 37635399617,
@@ -83,8 +83,11 @@
       "starostwo": 81,
       "organizational_units_and_companies": 214
     },
-    "warminsko_mazurskie_verified_documents": 133,
+    "warminsko_mazurskie_verified_documents": 235,
     "warminsko_mazurskie_verified_breakdown": {
+      "councillors_2020": 33,
+      "councillors_2021": 32,
+      "councillors_2022": 37,
       "councillors_2023": 29,
       "councillors_2024": 31,
       "selected_annual_2025": 73
@@ -96,5 +99,5 @@
     "production downloader still needs benchmark payload-validation hardening; standard GitHub write is blocked",
     "row-level private Bronze append for recent verified discovery remains unavailable"
   ],
-  "next_gate": "expand remaining Powiat Wrzesinski declaration roots; retry production download validation update; persist/hash a bounded private RAW batch when byte ingress is available"
+  "next_gate": "expand Wojewodztwo Warminsko-Mazurskie 2020-2022 organizational-unit and decision-maker declaration roots; retry production download validation update; persist/hash a bounded private RAW batch when byte ingress is available"
 }
