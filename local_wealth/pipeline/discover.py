@@ -12,7 +12,7 @@ DECLARATION_TERMS = (
     "oswiadczenie majatkowe",
     "oswiadczenia majatkowe",
 )
-DOCUMENT_EXT_RE = re.compile(r"\\.(pdf|jpg|jpeg|png)(?:$|[?#])", re.I)
+DOCUMENT_EXT_RE = re.compile(r"\.(pdf|jpg|jpeg|png)(?:$|[?#])", re.I)
 SEPARATOR_RE = re.compile(r"[-_]+")
 
 
