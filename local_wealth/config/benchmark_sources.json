@@ -39,6 +39,14 @@
       "pattern": "person_pages",
       "url": "https://www.bip.wrzesnia.powiat.pl/1138,oswiadczenia-majatkowe-radnych",
       "verified_on": "2026-10-07"
+    },
+    {
+      "jst": "Województwo Warmińsko-Mazurskie",
+      "teryt": "28",
+      "jst_type": "voivodeship",
+      "pattern": "year_index_nested",
+      "url": "https://bip.warmia.mazury.pl/kategoria/46/oswiadczenia-majatkowe.html",
+      "verified_on": "2026-10-07"
     }
   ]
 }
