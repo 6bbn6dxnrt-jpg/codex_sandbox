@@ -77,10 +77,11 @@ def download(url: str, out_dir: str, timeout: int = 30, max_bytes: int = MAX_BYT
         length = r.headers.get("Content-Length")
         if length:
             try:
-                if int(length) > max_bytes:
-                    raise DownloadError("TOO_LARGE")
+                declared_size = int(length)
             except ValueError:
-                pass
+                declared_size = -1
+            if declared_size > max_bytes:
+                raise DownloadError("TOO_LARGE")
         data = r.read(max_bytes + 1)
     if len(data) > max_bytes:
         raise DownloadError("TOO_LARGE")
