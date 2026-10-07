@@ -1,5 +1,5 @@
 {
-  "project_version": "0.1.3",
+  "project_version": "0.1.4",
   "primary_window": [
     2020,
     2025
@@ -16,7 +16,7 @@
   "kpi": {
     "jst_in_frame": 3,
     "jst_source_found": 3,
-    "documents_discovered": 220,
+    "documents_discovered": 344,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 0,
@@ -38,17 +38,19 @@
       "year_index_nested",
       "person_pages"
     ],
-    "verified_discovery_count": 220,
-    "verified_discovery_basis": "private Source Registry Run Ledger; Działdowo 182 + Cewice 38",
+    "verified_discovery_count": 344,
+    "verified_discovery_basis": "private Source Registry Run Ledger; Działdowo 182 + Cewice 38 + Białystok 124",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
     "ci_status": "success",
     "ci_run_id": 37524703443,
     "ci_commit": "3c6ab9c0f80a06f58bff50ffd8bc731a712a946b",
-    "bialystok_person_pages_reported": 611
+    "bialystok_person_pages_reported": 611,
+    "bialystok_verified_documents": 124,
+    "discovery_normalizer_commit": "465a967e0971f3381a442dfb35d62ae9bc9efb6b",
+    "local_regression_tests": "10/10 passed"
   },
   "blockers": [
-    "durable private raw-document byte ingress is not yet wired; public repository must not receive declaration PDFs or row-level personal data",
-    "GitHub connector safety checks currently block the discovery normalizer code change needed for underscore/hyphen person-page URLs"
+    "durable private RAW byte ingress is not yet wired"
   ],
-  "next_gate": "expand Białystok person pages to document URLs; persist a bounded private RAW batch as soon as byte ingress is available"
+  "next_gate": "continue Białystok expansion; retry one failed person page independently; persist and hash a bounded private RAW batch when byte ingress is available"
 }
