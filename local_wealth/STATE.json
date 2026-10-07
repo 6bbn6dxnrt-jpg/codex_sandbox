@@ -1,5 +1,5 @@
 {
-  "project_version": "0.1.12",
+  "project_version": "0.1.13",
   "primary_window": [
     2020,
     2025
@@ -16,7 +16,7 @@
   "kpi": {
     "jst_in_frame": 6,
     "jst_source_found": 6,
-    "documents_discovered": 1988,
+    "documents_discovered": 2084,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 83,
@@ -38,12 +38,10 @@
       "year_index_nested",
       "person_pages"
     ],
-    "verified_discovery_count": 1988,
-    "verified_discovery_basis": "BIP verification; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 475 + Powiat Wrzesinski 397 + Wojewodztwo Warminsko-Mazurskie 474",
+    "verified_discovery_count": 2084,
+    "verified_discovery_basis": "BIP verification; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 475 + Powiat Wrzesinski 397 + Wojewodztwo Warminsko-Mazurskie 570 (incl. 96 annual economic-year 2025 declarations filed in 2026)",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
-    "ci_status": "success",
-    "ci_run_id": 37635399617,
-    "ci_commit": "e2c5b7a3c1ea748f10bc0d4e64d761c430e031ab",
+    "ci_status": "awaiting verification of latest branch HEAD",
     "bialystok_person_pages_reported": 611,
     "bialystok_verified_documents": 230,
     "cewice_verified_annual_documents": {
@@ -83,7 +81,7 @@
       "starostwo": 81,
       "organizational_units_and_companies": 214
     },
-    "warminsko_mazurskie_verified_documents": 474,
+    "warminsko_mazurskie_verified_documents": 570,
     "warminsko_mazurskie_verified_breakdown": {
       "councillors_2020": 33,
       "councillors_2021": 32,
@@ -91,14 +89,23 @@
       "councillors_2023": 29,
       "councillors_2024": 31,
       "selected_annual_2025": 73,
-      "annual_role_person_years_2020_2023_additional": 239
-    }
+      "annual_role_person_years_2020_2023_additional": 239,
+      "annual_economic_2025_filed_2026": 96
+    },
+    "annual_2025_role_detail_filed_2026": {
+      "councillors": 30,
+      "unit_directors": 46,
+      "administrative_decision_makers": 17,
+      "company_presidents": 3,
+      "excluded": "corrections and appointment/departure filings"
+    },
+    "production_downloader_validation_commit": "73a4117b9b94dbcbd36a7ac6962f953c5f706e93"
   },
   "blockers": [
     "durable private RAW byte ingress is not yet wired",
     "four Bialystok Bronze pointers remain in FETCH_RETRY",
-    "production downloader still needs benchmark payload-validation hardening; standard GitHub write is blocked",
-    "row-level private Bronze append for recent verified discovery remains unavailable"
+    "row-level private Bronze append for recent verified discovery remains unavailable",
+    "live-network download and private RAW durability are not yet verified; do not increase downloaded/hash KPIs"
   ],
-  "next_gate": "expand Wojewodztwo Warminsko-Mazurskie 2020-2022 organizational-unit and decision-maker declaration roots; retry production download validation update; persist/hash a bounded private RAW batch when byte ingress is available"
+  "next_gate": "verify new hardened-downloader tests in CI, then run bounded private RAW download/SHA-256/triage with error isolation; promote audited rows to Silver/Gold"
 }
