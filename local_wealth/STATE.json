@@ -16,7 +16,7 @@
   "kpi": {
     "jst_in_frame": 4,
     "jst_source_found": 4,
-    "documents_discovered": 1109,
+    "documents_discovered": 1110,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 83,
@@ -38,8 +38,8 @@
       "year_index_nested",
       "person_pages"
     ],
-    "verified_discovery_count": 1109,
-    "verified_discovery_basis": "public BIP verification + private Source Registry history; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 467",
+    "verified_discovery_count": 1110,
+    "verified_discovery_basis": "public BIP verification + private Source Registry history; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 468",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
     "ci_status": "success",
     "ci_run_id": 37575357661,
@@ -56,7 +56,7 @@
     },
     "discovery_normalizer_commit": "465a967e0971f3381a442dfb35d62ae9bc9efb6b",
     "cewice_verified_transition_documents": 33,
-    "wrzesnia_verified_documents": 467,
+    "wrzesnia_verified_documents": 468,
     "wrzesnia_verified_breakdown": {
       "umig_2020": 27,
       "umig_2021": 21,
@@ -73,7 +73,7 @@
       "councillors_annual_2020": 21,
       "councillors_annual_2021": 23,
       "councillors_annual_2022": 22,
-      "organizational_units_2020_2025": 136,
+      "organizational_units_2020_2025": 137,
       "municipal_companies_2020_2025": 14,
       "energy_cooperative_2025": 1
     }
