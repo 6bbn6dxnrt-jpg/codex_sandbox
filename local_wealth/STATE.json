@@ -1,5 +1,5 @@
 {
-  "project_version": "0.1.6",
+  "project_version": "0.1.7",
   "primary_window": [
     2020,
     2025
@@ -14,9 +14,9 @@
     "analytic"
   ],
   "kpi": {
-    "jst_in_frame": 3,
-    "jst_source_found": 3,
-    "documents_discovered": 642,
+    "jst_in_frame": 4,
+    "jst_source_found": 4,
+    "documents_discovered": 844,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 83,
@@ -38,8 +38,8 @@
       "year_index_nested",
       "person_pages"
     ],
-    "verified_discovery_count": 642,
-    "verified_discovery_basis": "private Source Registry Run Ledger; Dzialdowo 182 + Cewice 230 + Bialystok 230",
+    "verified_discovery_count": 844,
+    "verified_discovery_basis": "public BIP verification + private Source Registry history; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 202",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
     "ci_status": "success",
     "ci_run_id": 37575357661,
@@ -55,13 +55,26 @@
       "2025": 31
     },
     "discovery_normalizer_commit": "465a967e0971f3381a442dfb35d62ae9bc9efb6b",
-    "cewice_verified_transition_documents": 33
+    "cewice_verified_transition_documents": 33,
+    "wrzesnia_verified_documents": 202,
+    "wrzesnia_verified_breakdown": {
+      "umig_2020": 27,
+      "umig_2022": 27,
+      "umig_2023": 28,
+      "umig_2024": 26,
+      "umig_transition_2024": 8,
+      "umig_transition_2025": 3,
+      "councillors_end_viii_2024": 21,
+      "councillors_start_ix_2024": 21,
+      "councillors_annual_2023": 20,
+      "councillors_annual_2024": 21
+    }
   },
   "blockers": [
     "durable private RAW byte ingress is not yet wired",
     "four Bialystok Bronze pointers remain in FETCH_RETRY",
-    "ephemeral probe can currently treat an HTTP 200 HTML payload as a successful download; hardening write was blocked",
-    "row-level private Bronze append for the latest verified Bialystok batch was blocked"
+    "production downloader still needs the benchmark payload-validation hardening; standard GitHub write was blocked in this round",
+    "row-level private Bronze append for recent verified discovery remains unavailable"
   ],
-  "next_gate": "continue high-yield Bialystok discovery and Bronze promotion where permitted; harden probe payload validation; persist and hash a bounded private RAW batch when byte ingress is available"
+  "next_gate": "continue Wrzesnia high-yield 2021/2022 councillor and organisational-unit discovery; promote verified pointers to private Bronze where permitted; harden production download validation when standard write is allowed; persist/hash a bounded private RAW batch when byte ingress is available"
 }
