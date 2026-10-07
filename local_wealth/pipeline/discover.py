@@ -3,7 +3,7 @@
 Emits only link metadata; no declaration contents or personal data are stored.
 """
 from html.parser import HTMLParser
-from urllib.parse import urljoin, urlparse
+from urllib.parse import unquote, urljoin, urlparse
 import re
 
 DECLARATION_TERMS = (
@@ -12,7 +12,9 @@ DECLARATION_TERMS = (
     "oswiadczenie majatkowe",
     "oswiadczenia majatkowe",
 )
-DOCUMENT_EXT_RE = re.compile(r"\.(pdf|jpg|jpeg|png)(?:$|[?#])", re.I)
+DOCUMENT_EXT_RE = re.compile(r"\\.(pdf|jpg|jpeg|png)(?:$|[?#])", re.I)
+SEPARATOR_RE = re.compile(r"[-_]+")
+
 
 class LinkParser(HTMLParser):
     def __init__(self):
@@ -36,8 +38,22 @@ class LinkParser(HTMLParser):
             self._href = None
             self._text = []
 
+
 def same_host(a, b):
     return (urlparse(a).hostname or "").lower() == (urlparse(b).hostname or "").lower()
+
+
+def _normalized_haystack(label: str, url: str) -> str:
+    """Normalize common BIP URL separators before declaration-term matching.
+
+    Some BIP installations encode the declaration section as
+    oswiadczenia_majatkowe or oswiadczenia-majatkowe while person-page
+    labels contain only a person's name. Treating separators as spaces keeps
+    those pages and their pagination links discoverable without relying on names.
+    """
+    text = unquote(f"{label} {url}").lower()
+    return SEPARATOR_RE.sub(" ", text)
+
 
 def discover_links(page_url, html, same_host_only=True):
     parser = LinkParser()
@@ -49,7 +65,7 @@ def discover_links(page_url, html, same_host_only=True):
         url = urljoin(page_url, href)
         if same_host_only and not same_host(page_url, url):
             continue
-        hay = f"{label} {url}".lower()
+        hay = _normalized_haystack(label, url)
         kind = None
         if DOCUMENT_EXT_RE.search(url) or "/attachments/download/" in url.lower():
             kind = "document"
