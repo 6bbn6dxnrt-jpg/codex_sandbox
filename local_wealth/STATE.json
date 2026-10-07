@@ -1,5 +1,5 @@
 {
-  "project_version": "0.1.8",
+  "project_version": "0.1.9",
   "primary_window": [
     2020,
     2025
@@ -14,9 +14,9 @@
     "analytic"
   ],
   "kpi": {
-    "jst_in_frame": 4,
-    "jst_source_found": 4,
-    "documents_discovered": 1110,
+    "jst_in_frame": 5,
+    "jst_source_found": 5,
+    "documents_discovered": 1446,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 83,
@@ -38,12 +38,12 @@
       "year_index_nested",
       "person_pages"
     ],
-    "verified_discovery_count": 1110,
-    "verified_discovery_basis": "public BIP verification + private Source Registry history; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 468",
+    "verified_discovery_count": 1446,
+    "verified_discovery_basis": "BIP verification; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 475 + Powiat Wrzesinski 329",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
     "ci_status": "success",
-    "ci_run_id": 37575357661,
-    "ci_commit": "f8ce3b3f947a9b036b71859ccdcc7222c1a9c15e",
+    "ci_run_id": 37635399617,
+    "ci_commit": "e2c5b7a3c1ea748f10bc0d4e64d761c430e031ab",
     "bialystok_person_pages_reported": 611,
     "bialystok_verified_documents": 230,
     "cewice_verified_annual_documents": {
@@ -56,7 +56,7 @@
     },
     "discovery_normalizer_commit": "465a967e0971f3381a442dfb35d62ae9bc9efb6b",
     "cewice_verified_transition_documents": 33,
-    "wrzesnia_verified_documents": 468,
+    "wrzesnia_verified_documents": 475,
     "wrzesnia_verified_breakdown": {
       "umig_2020": 27,
       "umig_2021": 21,
@@ -73,16 +73,22 @@
       "councillors_annual_2020": 21,
       "councillors_annual_2021": 23,
       "councillors_annual_2022": 22,
-      "organizational_units_2020_2025": 137,
+      "organizational_units_2020_2025": 144,
       "municipal_companies_2020_2025": 14,
       "energy_cooperative_2025": 1
+    },
+    "powiat_wrzesinski_verified_documents": 329,
+    "powiat_wrzesinski_verified_breakdown": {
+      "councillors": 102,
+      "starostwo": 81,
+      "organizational_units_and_companies": 146
     }
   },
   "blockers": [
     "durable private RAW byte ingress is not yet wired",
     "four Bialystok Bronze pointers remain in FETCH_RETRY",
-    "production downloader still needs the benchmark payload-validation hardening; standard GitHub write was blocked in this round",
+    "production downloader still needs benchmark payload-validation hardening; standard GitHub write is blocked",
     "row-level private Bronze append for recent verified discovery remains unavailable"
   ],
-  "next_gate": "verify Wrzesnia UMiG 2021 at attachment level and WOK declarations; promote verified pointers to private Bronze where permitted; harden production download validation when standard write is allowed; persist/hash a bounded private RAW batch when byte ingress is available"
+  "next_gate": "expand remaining Powiat Wrzesinski declaration roots; retry production download validation update; persist/hash a bounded private RAW batch when byte ingress is available"
 }
