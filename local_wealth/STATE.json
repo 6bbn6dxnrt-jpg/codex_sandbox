@@ -1,5 +1,5 @@
 {
-  "project_version": "0.1.7",
+  "project_version": "0.1.8",
   "primary_window": [
     2020,
     2025
@@ -16,7 +16,7 @@
   "kpi": {
     "jst_in_frame": 4,
     "jst_source_found": 4,
-    "documents_discovered": 844,
+    "documents_discovered": 1061,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 83,
@@ -38,8 +38,8 @@
       "year_index_nested",
       "person_pages"
     ],
-    "verified_discovery_count": 844,
-    "verified_discovery_basis": "public BIP verification + private Source Registry history; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 202",
+    "verified_discovery_count": 1061,
+    "verified_discovery_basis": "public BIP verification + private Source Registry history; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 419",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
     "ci_status": "success",
     "ci_run_id": 37575357661,
@@ -56,7 +56,7 @@
     },
     "discovery_normalizer_commit": "465a967e0971f3381a442dfb35d62ae9bc9efb6b",
     "cewice_verified_transition_documents": 33,
-    "wrzesnia_verified_documents": 202,
+    "wrzesnia_verified_documents": 419,
     "wrzesnia_verified_breakdown": {
       "umig_2020": 27,
       "umig_2022": 27,
@@ -67,7 +67,13 @@
       "councillors_end_viii_2024": 21,
       "councillors_start_ix_2024": 21,
       "councillors_annual_2023": 20,
-      "councillors_annual_2024": 21
+      "councillors_annual_2024": 21,
+      "councillors_annual_2020": 21,
+      "councillors_annual_2021": 23,
+      "councillors_annual_2022": 22,
+      "organizational_units_2020_2025": 136,
+      "municipal_companies_2020_2025": 14,
+      "energy_cooperative_2025": 1
     }
   },
   "blockers": [
@@ -76,5 +82,5 @@
     "production downloader still needs the benchmark payload-validation hardening; standard GitHub write was blocked in this round",
     "row-level private Bronze append for recent verified discovery remains unavailable"
   ],
-  "next_gate": "continue Wrzesnia high-yield 2021/2022 councillor and organisational-unit discovery; promote verified pointers to private Bronze where permitted; harden production download validation when standard write is allowed; persist/hash a bounded private RAW batch when byte ingress is available"
+  "next_gate": "verify Wrzesnia UMiG 2021 at attachment level and WOK declarations; promote verified pointers to private Bronze where permitted; harden production download validation when standard write is allowed; persist/hash a bounded private RAW batch when byte ingress is available"
 }
