@@ -1,15 +1,25 @@
 {
-  "project_version": "0.1.5",
-  "primary_window": [2020, 2025],
+  "project_version": "0.1.6",
+  "primary_window": [
+    2020,
+    2025
+  ],
   "phase": "foundation_benchmark",
-  "layers": ["raw", "bronze", "silver", "gold", "panel", "analytic"],
+  "layers": [
+    "raw",
+    "bronze",
+    "silver",
+    "gold",
+    "panel",
+    "analytic"
+  ],
   "kpi": {
     "jst_in_frame": 3,
     "jst_source_found": 3,
-    "documents_discovered": 509,
+    "documents_discovered": 642,
     "documents_downloaded": 0,
     "unique_hashes": 0,
-    "bronze_filings": 47,
+    "bronze_filings": 83,
     "silver_filings": 0,
     "gold_audited": 0,
     "person_panels_2y": 0,
@@ -23,15 +33,19 @@
   "current_extractor": "v0",
   "benchmark": {
     "verified_on": "2026-10-07",
-    "source_patterns": ["direct_attachments", "year_index_nested", "person_pages"],
-    "verified_discovery_count": 509,
-    "verified_discovery_basis": "private Source Registry Run Ledger; Dzialdowo 182 + Cewice 197 + Bialystok 130",
+    "source_patterns": [
+      "direct_attachments",
+      "year_index_nested",
+      "person_pages"
+    ],
+    "verified_discovery_count": 642,
+    "verified_discovery_basis": "private Source Registry Run Ledger; Dzialdowo 182 + Cewice 230 + Bialystok 230",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
     "ci_status": "success",
-    "ci_run_id": 37524703443,
-    "ci_commit": "3c6ab9c0f80a06f58bff50ffd8bc731a712a946b",
+    "ci_run_id": 37575357661,
+    "ci_commit": "f8ce3b3f947a9b036b71859ccdcc7222c1a9c15e",
     "bialystok_person_pages_reported": 611,
-    "bialystok_verified_documents": 130,
+    "bialystok_verified_documents": 230,
     "cewice_verified_annual_documents": {
       "2020": 34,
       "2021": 34,
@@ -40,11 +54,14 @@
       "2024": 38,
       "2025": 31
     },
-    "discovery_normalizer_commit": "465a967e0971f3381a442dfb35d62ae9bc9efb6b"
+    "discovery_normalizer_commit": "465a967e0971f3381a442dfb35d62ae9bc9efb6b",
+    "cewice_verified_transition_documents": 33
   },
   "blockers": [
     "durable private RAW byte ingress is not yet wired",
-    "four Bialystok Bronze pointers remain in FETCH_RETRY"
+    "four Bialystok Bronze pointers remain in FETCH_RETRY",
+    "ephemeral probe can currently treat an HTTP 200 HTML payload as a successful download; hardening write was blocked",
+    "row-level private Bronze append for the latest verified Bialystok batch was blocked"
   ],
-  "next_gate": "continue Bialystok expansion while retrying dead-letter pointers; persist and hash a bounded private RAW batch when byte ingress is available"
+  "next_gate": "continue high-yield Bialystok discovery and Bronze promotion where permitted; harden probe payload validation; persist and hash a bounded private RAW batch when byte ingress is available"
 }
