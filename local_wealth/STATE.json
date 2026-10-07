@@ -1,5 +1,5 @@
 {
-  "project_version": "0.1.11",
+  "project_version": "0.1.12",
   "primary_window": [
     2020,
     2025
@@ -16,7 +16,7 @@
   "kpi": {
     "jst_in_frame": 6,
     "jst_source_found": 6,
-    "documents_discovered": 1749,
+    "documents_discovered": 1988,
     "documents_downloaded": 0,
     "unique_hashes": 0,
     "bronze_filings": 83,
@@ -38,8 +38,8 @@
       "year_index_nested",
       "person_pages"
     ],
-    "verified_discovery_count": 1749,
-    "verified_discovery_basis": "BIP verification; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 475 + Powiat Wrzesinski 397 + Wojewodztwo Warminsko-Mazurskie 235",
+    "verified_discovery_count": 1988,
+    "verified_discovery_basis": "BIP verification; Dzialdowo 182 + Cewice 230 + Bialystok 230 + Wrzesnia 475 + Powiat Wrzesinski 397 + Wojewodztwo Warminsko-Mazurskie 474",
     "download_probe_module": "local_wealth/benchmark/probe_download.py",
     "ci_status": "success",
     "ci_run_id": 37635399617,
@@ -83,14 +83,15 @@
       "starostwo": 81,
       "organizational_units_and_companies": 214
     },
-    "warminsko_mazurskie_verified_documents": 235,
+    "warminsko_mazurskie_verified_documents": 474,
     "warminsko_mazurskie_verified_breakdown": {
       "councillors_2020": 33,
       "councillors_2021": 32,
       "councillors_2022": 37,
       "councillors_2023": 29,
       "councillors_2024": 31,
-      "selected_annual_2025": 73
+      "selected_annual_2025": 73,
+      "annual_role_person_years_2020_2023_additional": 239
     }
   },
   "blockers": [
