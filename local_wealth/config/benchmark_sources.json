@@ -31,6 +31,14 @@
       "pattern": "year_index_nested",
       "url": "https://bip.wrzesnia.pl/?bip=1&bsc=N&cid=68",
       "verified_on": "2026-10-07"
+    },
+    {
+      "jst": "Powiat Wrzesiński",
+      "teryt": "3030",
+      "jst_type": "county",
+      "pattern": "person_pages",
+      "url": "https://www.bip.wrzesnia.powiat.pl/1138,oswiadczenia-majatkowe-radnych",
+      "verified_on": "2026-10-07"
     }
   ]
 }
