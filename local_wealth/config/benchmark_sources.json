@@ -23,6 +23,14 @@
       "pattern": "person_pages",
       "url": "https://www.bip.bialystok.pl/urzad_miejski/oswiadczenia_majatkowe/",
       "verified_on": "2026-10-06"
+    },
+    {
+      "jst": "Września",
+      "teryt": "3030053",
+      "jst_type": "urban_rural_commune",
+      "pattern": "year_index_nested",
+      "url": "https://bip.wrzesnia.pl/?bip=1&bsc=N&cid=68",
+      "verified_on": "2026-10-07"
     }
   ]
 }
