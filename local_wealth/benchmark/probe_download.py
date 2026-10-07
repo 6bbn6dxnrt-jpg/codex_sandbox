@@ -61,11 +61,39 @@ def _classify_pdf(data: bytes) -> str:
     return "PDF_MIXED_OR_UNKNOWN"
 
 
+def _payload_error(content_type: Optional[str], data: bytes) -> Optional[str]:
+    """Return an error code for a successful HTTP response that is not a document.
+
+    BIP endpoints sometimes return an HTML error/login page with HTTP 200. Such
+    responses must never inflate download/hash KPIs. PDF MIME responses also
+    require the PDF magic signature; mislabeled octet-stream PDFs remain valid
+    when the bytes start with the signature.
+    """
+    if not data:
+        return "EMPTY_BODY"
+
+    ctype = (content_type or "").split(";", 1)[0].strip().lower()
+    prefix = data[:4096].lstrip().lower()
+
+    if (
+        ctype in {"text/html", "application/xhtml+xml"}
+        or prefix.startswith(b"<!doctype html")
+        or prefix.startswith(b"<html")
+        or b"<html" in prefix[:1024]
+    ):
+        return "HTML_PAYLOAD"
+
+    if ctype == "application/pdf" and not data.startswith(b"%PDF-"):
+        return "BAD_PDF_SIGNATURE"
+
+    return None
+
+
 def _fetch_probe(url: str, timeout: int, max_bytes: int) -> tuple[ProbeResult, Optional[bytes]]:
     """Fetch once and return a result plus bytes for optional private persistence."""
     started = time.monotonic()
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "LocalWealthResearch/0.3"})
+        req = urllib.request.Request(url, headers={"User-Agent": "LocalWealthResearch/0.4"})
         with urllib.request.urlopen(req, timeout=timeout) as r:
             data = r.read(max_bytes + 1)
             ctype = r.headers.get_content_type()
@@ -74,6 +102,18 @@ def _fetch_probe(url: str, timeout: int, max_bytes: int) -> tuple[ProbeResult, O
                 False, url=url, elapsed_s=time.monotonic() - started,
                 error_code="TOO_LARGE"
             ), None
+
+        payload_error = _payload_error(ctype, data)
+        if payload_error:
+            return ProbeResult(
+                False,
+                url=url,
+                nbytes=len(data),
+                elapsed_s=time.monotonic() - started,
+                content_type=ctype,
+                error_code=payload_error,
+            ), None
+
         sha = hashlib.sha256(data).hexdigest()
         return ProbeResult(
             True, url=url, nbytes=len(data), sha256=sha,
@@ -101,6 +141,31 @@ def probe_url_ephemeral(url: str, timeout: int = 30, max_bytes: int = 30_000_000
     """
     result, _ = _fetch_probe(url, timeout=timeout, max_bytes=max_bytes)
     return result
+
+
+def probe_urls_ephemeral(
+    urls: Iterable[str],
+    timeout: int = 30,
+    max_bytes: int = 30_000_000,
+    max_documents: int = 100,
+) -> list[ProbeResult]:
+    """Run a bounded sequential benchmark without retaining declaration bytes.
+
+    Each URL is isolated: a failed fetch is encoded in its ProbeResult and does
+    not block later URLs. max_documents prevents accidental unbounded network
+    work in benchmark jobs.
+    """
+    if max_documents < 1:
+        raise ValueError("max_documents must be >= 1")
+
+    results: list[ProbeResult] = []
+    for url in urls:
+        if len(results) >= max_documents:
+            break
+        results.append(
+            probe_url_ephemeral(url, timeout=timeout, max_bytes=max_bytes)
+        )
+    return results
 
 
 def probe_url(url: str, raw_dir: str, timeout: int = 30, max_bytes: int = 30_000_000) -> ProbeResult:
