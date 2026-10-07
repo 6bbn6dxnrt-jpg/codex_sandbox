@@ -22,3 +22,13 @@ def test_duplicate_urls_are_deduplicated():
     html = '<a href="/x.pdf">A</a><a href="/x.pdf">B</a>'
     got = discover_links("https://bip.example.pl/root", html)
     assert len(got) == 1
+
+def test_underscore_declaration_section_url_is_discovered():
+    html = '<a href="/urzad_miejski/oswiadczenia_majatkowe/item.html">record</a>'
+    got = discover_links("https://bip.example.pl/urzad_miejski/root.html", html)
+    assert got[0]["kind"] == "index"
+
+def test_declaration_section_pagination_url_is_discovered():
+    html = '<a href="/oswiadczenia_majatkowe/group.html?pagination%5Boffset%5D=10">2</a>'
+    got = discover_links("https://bip.example.pl/oswiadczenia_majatkowe/group.html", html)
+    assert got[0]["kind"] == "index"
