@@ -2,7 +2,8 @@
 
 The module is safe for the public repository: it stores only code and
 aggregate metrics. Declaration bytes must be written to an external/private
-RAW directory supplied by the caller and are never committed.
+RAW directory supplied by the caller and are never committed. Ephemeral mode
+allows measuring download/hash/triage throughput without persisting bytes.
 """
 from __future__ import annotations
 
@@ -10,7 +11,6 @@ from dataclasses import dataclass
 from collections import Counter
 from typing import Iterable, Optional
 import hashlib
-import os
 import pathlib
 import time
 import urllib.error
@@ -51,8 +51,6 @@ def summarize(results: Iterable[ProbeResult]) -> dict:
 def _classify_pdf(data: bytes) -> str:
     if not data.startswith(b"%PDF-"):
         return "NON_PDF"
-    # Cheap first-pass triage only. A proper PDF parser/OCR stage comes later.
-    # Text operators are a useful positive signal but absence is not proof of scan.
     head = data[:2_000_000]
     text_signal = any(tok in head for tok in (b"BT", b"Tj", b"TJ", b"/Font"))
     image_signal = b"/Image" in head or b"/XObject" in head
@@ -63,39 +61,67 @@ def _classify_pdf(data: bytes) -> str:
     return "PDF_MIXED_OR_UNKNOWN"
 
 
+def _fetch_probe(url: str, timeout: int, max_bytes: int) -> tuple[ProbeResult, Optional[bytes]]:
+    """Fetch once and return a result plus bytes for optional private persistence."""
+    started = time.monotonic()
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "LocalWealthResearch/0.3"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            data = r.read(max_bytes + 1)
+            ctype = r.headers.get_content_type()
+        if len(data) > max_bytes:
+            return ProbeResult(
+                False, url=url, elapsed_s=time.monotonic() - started,
+                error_code="TOO_LARGE"
+            ), None
+        sha = hashlib.sha256(data).hexdigest()
+        return ProbeResult(
+            True, url=url, nbytes=len(data), sha256=sha,
+            elapsed_s=time.monotonic() - started, content_type=ctype,
+            pdf_class=_classify_pdf(data),
+        ), data
+    except urllib.error.HTTPError as e:
+        return ProbeResult(False, url=url, elapsed_s=time.monotonic()-started, error_code=f"HTTP_{e.code}"), None
+    except urllib.error.URLError as e:
+        reason = str(getattr(e, "reason", e)).upper()
+        code = "TIMEOUT" if "TIMED OUT" in reason else "NETWORK"
+        return ProbeResult(False, url=url, elapsed_s=time.monotonic()-started, error_code=code), None
+    except TimeoutError:
+        return ProbeResult(False, url=url, elapsed_s=time.monotonic()-started, error_code="TIMEOUT"), None
+    except OSError:
+        return ProbeResult(False, url=url, elapsed_s=time.monotonic()-started, error_code="IO_ERROR"), None
+
+
+def probe_url_ephemeral(url: str, timeout: int = 30, max_bytes: int = 30_000_000) -> ProbeResult:
+    """Fetch/hash/triage one URL without retaining declaration bytes.
+
+    This mode is for throughput benchmarking when private RAW persistence is
+    unavailable. It does not satisfy Silver provenance because bytes are not
+    retained durably.
+    """
+    result, _ = _fetch_probe(url, timeout=timeout, max_bytes=max_bytes)
+    return result
+
+
 def probe_url(url: str, raw_dir: str, timeout: int = 30, max_bytes: int = 30_000_000) -> ProbeResult:
     """Download one URL into caller-supplied private RAW storage.
 
     Idempotency: content is stored by SHA-256, so repeated bytes reuse the same
     target file. The function never chooses a repository-relative destination.
     """
-    started = time.monotonic()
+    result, data = _fetch_probe(url, timeout=timeout, max_bytes=max_bytes)
+    if not result.ok or data is None:
+        return result
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "LocalWealthResearch/0.2"})
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            data = r.read(max_bytes + 1)
-            ctype = r.headers.get_content_type()
-        if len(data) > max_bytes:
-            return ProbeResult(False, url=url, elapsed_s=time.monotonic()-started, error_code="TOO_LARGE")
-        sha = hashlib.sha256(data).hexdigest()
-        ext = ".pdf" if (ctype == "application/pdf" or data.startswith(b"%PDF-")) else ".bin"
+        ext = ".pdf" if (result.content_type == "application/pdf" or data.startswith(b"%PDF-")) else ".bin"
         root = pathlib.Path(raw_dir).expanduser().resolve()
         root.mkdir(parents=True, exist_ok=True)
-        target = root / f"{sha}{ext}"
+        target = root / f"{result.sha256}{ext}"
         if not target.exists():
             target.write_bytes(data)
-        return ProbeResult(
-            True, url=url, nbytes=len(data), sha256=sha,
-            elapsed_s=time.monotonic()-started, content_type=ctype,
-            pdf_class=_classify_pdf(data),
-        )
-    except urllib.error.HTTPError as e:
-        return ProbeResult(False, url=url, elapsed_s=time.monotonic()-started, error_code=f"HTTP_{e.code}")
-    except urllib.error.URLError as e:
-        reason = str(getattr(e, "reason", e)).upper()
-        code = "TIMEOUT" if "TIMED OUT" in reason else "NETWORK"
-        return ProbeResult(False, url=url, elapsed_s=time.monotonic()-started, error_code=code)
-    except TimeoutError:
-        return ProbeResult(False, url=url, elapsed_s=time.monotonic()-started, error_code="TIMEOUT")
+        return result
     except OSError:
-        return ProbeResult(False, url=url, elapsed_s=time.monotonic()-started, error_code="IO_ERROR")
+        return ProbeResult(
+            False, url=url, elapsed_s=result.elapsed_s,
+            error_code="IO_ERROR"
+        )
