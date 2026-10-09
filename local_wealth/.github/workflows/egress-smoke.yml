@@ -1,0 +1,32 @@
+name: local-wealth-egress-smoke
+on:
+  push:
+    branches: [local-wealth-poland]
+    paths:
+      - "local_wealth/.github/workflows/egress-smoke.yml"
+  workflow_dispatch:
+jobs:
+  egress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Verify public BIP connectivity without storing declarations
+        shell: bash
+        run: |
+          python - <<'PY'
+          import socket, urllib.request
+          hosts = ["bip.dzialdowo.eu", "bip.cewice.pl"]
+          for host in hosts:
+              try:
+                  socket.getaddrinfo(host, 443)
+                  print(host + ": DNS_OK")
+              except OSError as e:
+                  print(host + ": DNS_FAILED " + type(e).__name__)
+                  continue
+              try:
+                  req = urllib.request.Request("https://" + host + "/", headers={"User-Agent":"LocalWealthResearch/0.5"})
+                  with urllib.request.urlopen(req, timeout=12) as response:
+                      print(host + ": HTTP_" + str(response.status))
+              except Exception as e:
+                  print(host + ": FETCH_FAILED " + type(e).__name__)
+          PY
