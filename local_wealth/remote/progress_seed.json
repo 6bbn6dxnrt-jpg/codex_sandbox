@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "indexes": {
+    "0": {
+      "index_sha256": "f7dea83bdbb21a1b88a31af4af32b82919c4bc7dcb87d6de08a83ca2e3ee4e6c",
+      "next_offset": 15
+    },
+    "1": {
+      "index_sha256": "813931b1867972422a7a1c8810f87ae8722ff47b5b69e56ad815131299622fda",
+      "next_offset": 15
+    },
+    "2": {
+      "index_sha256": "c471282bac6c1d2c24244f0fb40d30388772a55ea15cc897e40e2c7719ea9c75",
+      "next_offset": 15
+    }
+  }
+}

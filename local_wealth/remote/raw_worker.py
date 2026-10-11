@@ -9,6 +9,7 @@ import hashlib
 import ipaddress
 import json
 import os
+import re
 import signal
 import socket
 import sys
@@ -132,7 +133,20 @@ def validate_pdf_bytes(data):
     if len(data) < 512 or not data.startswith(b'%PDF-') or b'%%EOF' not in data[-4096:]:
         raise ValueError('invalid_pdf_envelope')
 
-def acquire(config_path: Path, public_key: Path, output: Path, max_documents: int = 100):
+def read_progress(path: Path | None):
+    if path is None or not path.exists():
+        return {'schema_version': 1, 'indexes': {}}
+    value = json.loads(path.read_text())
+    if set(value) != {'schema_version', 'indexes'} or value['schema_version'] != 1 or not isinstance(value['indexes'], dict):
+        raise ValueError('invalid_progress_schema')
+    for key, item in value['indexes'].items():
+        if not re.fullmatch(r'[0-5]', key) or set(item) != {'index_sha256', 'next_offset'}:
+            raise ValueError('invalid_progress_fields')
+        if not re.fullmatch(r'[a-f0-9]{64}', item['index_sha256']) or type(item['next_offset']) is not int or not 0 <= item['next_offset'] <= 100000:
+            raise ValueError('invalid_progress_values')
+    return value
+
+def acquire(config_path: Path, public_key: Path, output: Path, max_documents: int = 100, progress_cache: Path | None = None):
     if not 1 <= max_documents <= 100:
         raise ValueError('batch_limit_out_of_bounds')
     output.mkdir(parents=True, exist_ok=True)
@@ -145,8 +159,9 @@ def acquire(config_path: Path, public_key: Path, output: Path, max_documents: in
     if len(sources) > 6:
         raise ValueError('too_many_indexes')
     started = time.monotonic()
+    progress = read_progress(progress_cache)
     report = {'schema_version': 1, 'started_at': utcnow(), 'operation': 'opaque_public_raw_acquisition', 'scientific_admitted': False, 'publication_allowed': False, 'documents': [], 'indexes': [], 'failures': [], 'extraction_count': 0}
-    metrics = {'index_count': 0, 'discovered_links': 0, 'downloaded_pdfs': 0, 'unique_documents': 0, 'failed_fetches': 0, 'raw_bytes': 0, 'extractions': 0}
+    metrics = {'index_count': 0, 'discovered_links': 0, 'downloaded_pdfs': 0, 'unique_documents': 0, 'failed_fetches': 0, 'raw_bytes': 0, 'extractions': 0, 'skipped_prior_links': 0}
     fetcher = Fetcher(delay=1.0)
     visited_urls, seen_hashes = set(), set()
     with tempfile.TemporaryDirectory(prefix='wealth-private-') as temp:
@@ -184,10 +199,15 @@ def acquire(config_path: Path, public_key: Path, output: Path, max_documents: in
                 metrics['failed_fetches'] += 1
                 report['failures'].append({'stage': 'index', 'source_url': index_url, 'error_class': failure_code(error)})
                 continue
-            for offset, url in enumerate(candidates):
+            prior = progress['indexes'].get(str(source_index), {})
+            start_offset = min(prior.get('next_offset', 0), len(candidates)) if prior.get('index_sha256') == index_digest else 0
+            metrics['skipped_prior_links'] += start_offset
+            cursor_end = start_offset
+            for offset, url in enumerate(candidates[start_offset:], start=start_offset):
                 if metrics['downloaded_pdfs'] >= max_documents or metrics['raw_bytes'] >= MAX_TOTAL_BYTES or time.monotonic() - started > 900:
                     break
                 if url in visited_urls:
+                    cursor_end = offset + 1
                     continue
                 visited_urls.add(url)
                 try:
@@ -209,13 +229,16 @@ def acquire(config_path: Path, public_key: Path, output: Path, max_documents: in
                 except Exception as error:
                     metrics['failed_fetches'] += 1
                     report['failures'].append({'stage': 'pdf', 'source_url': url, 'source_index': source_index, 'index_offset': offset, 'error_class': failure_code(error)})
+                cursor_end = offset + 1
+            progress['indexes'][str(source_index)] = {'index_sha256': index_digest, 'next_offset': cursor_end}
             print(json.dumps({'stage': 'index_complete', **metrics}), flush=True)
-        if not metrics['unique_documents']:
+        if not metrics['unique_documents'] and not metrics['skipped_prior_links']:
             raise RuntimeError('no_documents_acquired')
         report['metrics'] = metrics
         report['finished_at'] = utcnow()
         report['elapsed_seconds'] = round(time.monotonic() - started, 3)
-        report['resume_status'] = 'private_merge_required; no automated remote resume claimed'
+        report['resume_status'] = 'nonpersonal_index_cursor; failed_pdf_retries_in_encrypted_manifest'
+        report['progress_after_artifact_upload'] = progress
         (private_dir / 'manifest.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
         archive = private_dir / 'checkpoint.zip'
         with zipfile.ZipFile(archive, 'x', compression=zipfile.ZIP_DEFLATED) as package:
@@ -230,6 +253,10 @@ def acquire(config_path: Path, public_key: Path, output: Path, max_documents: in
             sealed.unlink(missing_ok=True)
             raise ValueError('invalid_encrypted_output')
     public_report = {'status': 'encrypted_checkpoint_ready', **metrics, 'elapsed_seconds': round(time.monotonic() - started, 3), **encryption}
+    if progress_cache is not None:
+        pending = progress_cache.with_suffix(progress_cache.suffix + '.pending')
+        pending.parent.mkdir(parents=True, exist_ok=True)
+        pending.write_text(json.dumps(progress, sort_keys=True))
     print(json.dumps(public_report), flush=True)
     return public_report
 
@@ -239,9 +266,10 @@ if __name__ == '__main__':
     parser.add_argument('--public-key', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--max-documents', type=int, default=100)
+    parser.add_argument('--progress-cache', type=Path)
     args = parser.parse_args()
     try:
-        acquire(args.config, args.public_key, args.output, args.max_documents)
+        acquire(args.config, args.public_key, args.output, args.max_documents, args.progress_cache)
     except Exception as error:
         # Error messages and tracebacks may contain source URLs or page text.
         print(json.dumps({'status': 'failed', 'error_class': type(error).__name__}), file=sys.stderr)

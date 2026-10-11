@@ -23,8 +23,23 @@ jobs:
         run: python -m pip install --disable-pip-version-check --no-input -r local_wealth/remote/requirements.txt
       - name: Verify encryption and privacy boundaries on synthetic fixtures
         run: PYTHONPATH=local_wealth/remote python -m unittest discover -s local_wealth/remote/tests -v
+      - name: Restore nonpersonal index cursor
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/wealth-progress.json
+          key: wealth-index-cursor-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: wealth-index-cursor-v1-
+      - name: Seed missing cursor from verified private checkpoint aggregates
+        run: |
+          python - <<'PY'
+          import os, shutil
+          from pathlib import Path
+          progress = Path(os.environ['RUNNER_TEMP']) / 'wealth-progress.json'
+          if not progress.exists():
+              shutil.copyfile('local_wealth/remote/progress_seed.json', progress)
+          PY
       - name: Acquire bounded official source bytes and encrypt checkpoint
-        run: python local_wealth/remote/raw_worker.py --config local_wealth/remote/smoke_config.json --public-key local_wealth/remote/recipient-public.pem --output "$RUNNER_TEMP/wealth-encrypted" --max-documents 100
+        run: python local_wealth/remote/raw_worker.py --config local_wealth/remote/smoke_config.json --public-key local_wealth/remote/recipient-public.pem --output "$RUNNER_TEMP/wealth-encrypted" --max-documents 100 --progress-cache "$RUNNER_TEMP/wealth-progress.json"
       - name: Verify only encrypted output exists
         run: |
           python - <<'PY'
@@ -46,3 +61,21 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 7
+      - name: Advance nonpersonal cursor only after encrypted upload succeeds
+        run: |
+          python - <<'PY'
+          import os, sys
+          from pathlib import Path
+          sys.path.insert(0, 'local_wealth/remote')
+          from raw_worker import read_progress
+          target = Path(os.environ['RUNNER_TEMP']) / 'wealth-progress.json'
+          pending = target.with_suffix('.json.pending')
+          read_progress(pending)
+          os.replace(pending, target)
+          print('NONPERSONAL_CURSOR_COMMIT_PASS')
+          PY
+      - name: Save nonpersonal cursor after confirmed encrypted artifact
+        uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/wealth-progress.json
+          key: wealth-index-cursor-v1-${{ github.run_id }}-${{ github.run_attempt }}
