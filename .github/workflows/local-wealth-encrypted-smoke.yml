@@ -1,0 +1,48 @@
+name: local-wealth-encrypted-smoke
+on:
+  push:
+    branches: [local-wealth-poland]
+    paths:
+      - 'local_wealth/remote/**'
+      - '.github/workflows/local-wealth-encrypted-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: local-wealth-encrypted-smoke
+  cancel-in-progress: false
+jobs:
+  acquire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install pinned encryption dependency
+        run: python -m pip install --disable-pip-version-check --no-input -r local_wealth/remote/requirements.txt
+      - name: Verify encryption and privacy boundaries on synthetic fixtures
+        run: PYTHONPATH=local_wealth/remote python -m unittest discover -s local_wealth/remote/tests -v
+      - name: Acquire bounded official source bytes and encrypt checkpoint
+        run: python local_wealth/remote/raw_worker.py --config local_wealth/remote/smoke_config.json --public-key local_wealth/remote/recipient-public.pem --output "$RUNNER_TEMP/wealth-encrypted" --max-documents 100
+      - name: Verify only encrypted output exists
+        run: |
+          python - <<'PY'
+          import os, sys
+          from pathlib import Path
+          sys.path.insert(0, 'local_wealth/remote')
+          from envelope import inspect_envelope
+          folder = Path(os.environ['RUNNER_TEMP']) / 'wealth-encrypted'
+          files = list(folder.iterdir())
+          assert len(files) == 1 and files[0].name == 'checkpoint.lwe'
+          assert inspect_envelope(files[0])['encrypted_bytes'] >= 1024
+          print('ENCRYPTED_OUTPUT_ONLY_PASS')
+          PY
+      - name: Upload encrypted checkpoint only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: local-wealth-encrypted-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/wealth-encrypted/checkpoint.lwe
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7

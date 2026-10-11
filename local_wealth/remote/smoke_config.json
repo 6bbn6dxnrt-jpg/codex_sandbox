@@ -1,0 +1,9 @@
+{
+  "operation": "opaque_public_raw_acquisition",
+  "allowed_hosts": ["marcinowice.biuletyn.net"],
+  "sources": [
+    {"index_url": "https://marcinowice.biuletyn.net/archiwum/bip.marcinowice.pl/index6017.html?id=1664"},
+    {"index_url": "https://marcinowice.biuletyn.net/archiwum/bip.marcinowice.pl/index856d-2.html?id=1704"},
+    {"index_url": "https://marcinowice.biuletyn.net/archiwum/bip.marcinowice.pl/index4b8a.html?id=1742"}
+  ]
+}
